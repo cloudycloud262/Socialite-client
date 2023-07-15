@@ -1,0 +1,63 @@
+.wrapper {
+  display: flex;
+  flex-grow: 1;
+  background-color: gainsboro;
+  gap: 1px;
+  overflow: auto;
+}
+.left,
+.right,
+.center {
+  flex-basis: 0;
+  background-color: white;
+}
+.left,
+.right {
+  flex-grow: 0.7;
+  min-width: 300px;
+}
+.right {
+  display: flex;
+  flex-direction: column;
+}
+.center {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: auto;
+}
+.center > :global(.create-post-form) {
+  display: none;
+  border-bottom: 1px solid gainsboro;
+}
+.nfLink {
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  background-color: white;
+  padding: 0.5rem 0;
+}
+.center > :global(.list),
+.center > :global(.list) > :global(.list) {
+  position: relative;
+  flex-grow: 1;
+}
+
+@media (width<900px) {
+  .right {
+    display: none;
+  }
+}
+@media (width<600px) {
+  .left {
+    display: none;
+  }
+  .center > :global(.create-post-form) {
+    display: flex;
+  }
+  .center > :global(.list) {
+    overflow: visible;
+  }
+}

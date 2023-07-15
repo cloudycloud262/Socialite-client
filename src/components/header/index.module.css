@@ -1,0 +1,125 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  height: 60px;
+  padding: 0 2rem;
+  gap: 2.5rem;
+  background-color: white;
+  border-bottom: 1px solid rgb(195, 195, 195);
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.searchWrapper {
+  flex-grow: 1;
+  z-index: 1;
+  max-width: 380px;
+  box-sizing: border-box;
+  margin: 0 auto;
+  position: relative;
+}
+.search {
+  margin: 0.3rem 0;
+}
+.searchIcon {
+  display: none;
+}
+.search > span:nth-of-type(2) {
+  display: none;
+}
+.searchMenu {
+  position: absolute;
+  width: 100%;
+  box-sizing: border-box;
+  border: 2px solid gainsboro;
+  overflow: auto;
+  max-height: min(400px, 70vh);
+  border-radius: 0.2rem;
+}
+.searchLoading {
+  padding: 4rem 0;
+  background-color: white;
+}
+.searchEmpty {
+  background-color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+.navbar {
+  display: flex;
+  gap: 0.6rem;
+  margin-left: auto;
+}
+.navItem {
+  display: flex;
+  cursor: pointer;
+}
+.bottomNav {
+  z-index: 1;
+  display: none;
+}
+
+.account {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0;
+  cursor: pointer;
+}
+
+@media (width<900px) {
+  .logo > span {
+    display: none;
+  }
+  .account > span {
+    display: none;
+  }
+}
+
+@media (width<700px) {
+  .wrapper {
+    gap: 1.5rem;
+    padding: 0 1rem;
+  }
+}
+
+@media (width<550px) {
+  .searchWrapper {
+    transition: 0.2s;
+    transform: scaleX(0);
+    position: absolute;
+    width: calc(100% - 2rem);
+    max-width: 550px;
+  }
+  .activeSearch {
+    transform: scaleX(1);
+  }
+  .search > span:nth-of-type(2) {
+    display: inline;
+  }
+  .searchIcon {
+    display: flex;
+    margin-left: auto;
+  }
+  .wrapper > .navbar {
+    display: none;
+  }
+  .bottomNav {
+    display: block;
+  }
+  .navbar {
+    width: 100%;
+    box-sizing: border-box;
+    height: 45px;
+    flex-shrink: 0;
+    background-color: white;
+    border-top: 1px solid rgb(195, 195, 195);
+  }
+  .navItem {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

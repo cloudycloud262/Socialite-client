@@ -1,0 +1,8 @@
+.userbody {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  row-gap: 0.2rem;
+}

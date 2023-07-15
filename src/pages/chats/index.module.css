@@ -1,0 +1,151 @@
+.wrapper {
+  display: flex;
+  overflow: auto;
+  background-color: gainsboro;
+  gap: 2px;
+  flex-grow: 1;
+  position: relative;
+}
+
+.list {
+  flex-grow: 0.5;
+  max-width: 450px;
+  min-width: 300px;
+  flex-basis: 0;
+  position: relative;
+}
+.listUsername {
+  display: flex;
+  flex-direction: column;
+}
+
+.room {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-grow: 1;
+  flex-basis: 0;
+  background-color: gainsboro;
+  overflow: auto;
+  position: relative;
+}
+svg.closeRoomBtn {
+  display: none;
+}
+
+.chats {
+  background-color: white;
+  flex-grow: 1;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.3rem 0.6rem;
+  flex-direction: column-reverse;
+}
+.bubble {
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.15rem;
+  max-width: 45%;
+  box-sizing: border-box;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.placeholder {
+  background-color: white;
+  flex-grow: 1;
+  font-size: 1.4rem;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.sentBubble {
+  margin-left: auto;
+  color: white;
+  background-color: #62a6fe;
+}
+.receivedBubble {
+  margin-right: auto;
+  color: #62a6fe;
+  border: 2px solid;
+}
+.nfBubble {
+  margin: 0 auto;
+  background-color: rgb(255, 243, 180);
+}
+.unreadBubble {
+  background-color: grey;
+}
+.unreadCount {
+  font-size: 0.75rem;
+  font-weight: 600;
+  background-color: #62a6fe;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  height: 25px;
+  width: 25px;
+  margin-left: auto;
+}
+.isTyping {
+  display: flex;
+  gap: 0.2rem;
+}
+.isTyping > span {
+  height: 7px;
+  width: 7px;
+  border-radius: 50%;
+}
+.isTyping > span:nth-child(1) {
+  animation-name: typing;
+  animation-duration: 0.6s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+.isTyping > span:nth-child(2) {
+  animation-name: typing;
+  animation-duration: 0.6s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  animation-delay: 0.2s;
+}
+.isTyping > span:nth-child(3) {
+  animation-name: typing;
+  animation-duration: 0.6s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  animation-delay: 0.4s;
+}
+@keyframes typing {
+  from {
+    background-color: black;
+  }
+  to {
+    background-color: rgb(172, 172, 172);
+  }
+}
+
+@media (width<650px) {
+  .list {
+    flex-grow: 1;
+    max-width: 650px;
+  }
+  .room {
+    position: absolute;
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: 0.2s;
+    height: 100%;
+    box-sizing: border-box;
+    width: 100%;
+  }
+  .roomActive {
+    transform: scaleY(1);
+  }
+  svg.closeRoomBtn {
+    display: inline;
+  }
+}
