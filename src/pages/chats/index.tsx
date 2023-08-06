@@ -55,8 +55,34 @@ const Chats: FC = () => {
   useEffect(() => {
     return () => {
       dispatch(setActiveChatIndex(-1));
+      console.log(getMessages.data);
+      if (!getMessages.data?.length) {
+        dispatch(
+          chatApi.util.updateQueryData("getChats", undefined, (draft) =>
+            draft.filter((chat) => chat.uuid !== id)
+          )
+        );
+      }
     };
   }, []);
+  useEffect(() => {
+    getUser.isSuccess &&
+      id &&
+      dispatch(
+        chatApi.util.updateQueryData("getChats", undefined, (draft) => [
+          {
+            username: getUser.data ? getUser.data.username : "",
+            displayPicture: getUser.data.displayPicture,
+            uuid: id,
+            userId: newChatUserId,
+            unreadCount: 0,
+            lastMessageSenderId: "",
+          },
+          ...draft,
+        ])
+      );
+    setActiveChatIndex(0);
+  }, [getUser.isSuccess]);
   useEffect(() => {
     if (
       activeChatIndex >= 0 &&
