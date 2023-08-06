@@ -1,0 +1,41 @@
+.bg {
+  display: flex;
+  flex-grow: 1;
+}
+.main {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+}
+.title {
+  font-weight: 700;
+  font-size: 8rem;
+  position: relative;
+  color: #62a6fe;
+}
+.title::before {
+  content: "Page Not Found";
+  font-size: 0.8rem;
+  font-weight: 500;
+  background-color: #62a6fe;
+  color: white;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.2rem;
+  position: absolute;
+  bottom: 43px;
+  left: 73px;
+  transform: rotate(12deg);
+}
+.navigateBtn {
+  box-shadow: 2px 2px 1px;
+}
+@media (width<500px) {
+  .title {
+    font-size: 6rem;
+  }
+  .title:before {
+    font-size: 0.6rem;
+    bottom: 32px;
+    left: 55px;
+  }
+}

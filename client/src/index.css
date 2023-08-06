@@ -1,0 +1,329 @@
+@font-face {
+  font-family: Manrope;
+  src: url(/Manrope.ttf);
+}
+
+body {
+  font-family: Manrope;
+  margin: 0;
+}
+#root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+a {
+  text-decoration: none;
+}
+
+form,
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  align-self: stretch;
+}
+.form-input-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+.create-post-form {
+  padding: 1rem;
+  position: relative;
+  background-color: white;
+  flex-grow: 1;
+}
+
+input,
+textarea,
+button {
+  font-family: Manrope;
+  font-weight: 600;
+  font-size: 0.85rem;
+  outline: none;
+  border: none;
+}
+textarea {
+  resize: none;
+  max-height: 200px;
+}
+
+/* Button */
+button,
+.btn {
+  transition-duration: 0.2s;
+  transition-property: background-color, border, color, box-shadow;
+  padding: 0.6rem;
+  outline: none;
+  border-radius: 0.15rem;
+  cursor: pointer;
+}
+.btn {
+  text-align: center;
+}
+.btn-grp {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.contained-btn {
+  background-color: #62a6fe;
+  border: 1px solid transparent;
+  color: white;
+  justify-content: center;
+}
+.contained-btn:hover {
+  background-color: white;
+  color: #62a6fe;
+  border: 1px solid;
+}
+
+.transparent-btn {
+  background-color: transparent;
+  border: none;
+  justify-content: center;
+}
+.transparent-btn:hover {
+  background-color: rgb(237, 237, 237);
+}
+
+.outlined-btn {
+  background-color: transparent;
+  color: #62a6fe;
+  border: 1px solid;
+  justify-content: center;
+}
+.outlined-btn:hover {
+  background-color: #62a6fe;
+  color: white;
+  border: 1px solid #62a6fe;
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.danger-btn {
+  color: red;
+}
+.outlined-btn.danger-btn {
+  border: 1px solid red;
+}
+.outlined-btn.danger-btn:hover {
+  background-color: red;
+  color: white;
+}
+.contained-btn.danger-btn {
+  background-color: red;
+  border: 1px solid transparent;
+  color: white;
+}
+.contained-btn.danger-btn:hover {
+  background-color: white;
+  color: red;
+  border: 1px solid;
+}
+
+/* Input */
+.filled-input {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  background-color: rgb(234, 234, 234);
+  padding: 0.6rem;
+  border-radius: 0.15rem;
+  transition-duration: 0.15s;
+  transition-property: background-color, filter;
+}
+.filled-input:focus-within {
+  background-color: white;
+  filter: drop-shadow(0px 0px 1px #62a6fe);
+}
+.filled-input > input,
+.filled-input > textarea {
+  flex-grow: 1;
+  border: none;
+  outline: none;
+  background-color: transparent;
+}
+
+.dp-icon {
+  height: 27px;
+  width: 27px;
+  border-radius: 50%;
+}
+
+.fw-medium {
+  font-weight: 600;
+}
+.fw-thin {
+  font-weight: 500;
+}
+.fw-thick {
+  font-weight: 700;
+}
+.fs-large {
+  font-size: 1.2rem;
+}
+.fs-medium {
+  font-size: 0.93rem;
+}
+.fs-small {
+  font-size: 0.8rem;
+}
+.disabled-text {
+  color: grey;
+}
+
+.error {
+  color: red;
+}
+
+.logo {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.3rem;
+}
+.logo > span {
+  font-weight: 800;
+  font-size: 1.3rem;
+}
+/* Menucard */
+.menu-wrapper {
+  position: relative;
+}
+.menu {
+  position: absolute;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  min-width: 100%;
+  right: 0;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  width: max-content;
+  border-radius: 0.2rem;
+  filter: drop-shadow(0px 0px 1px grey);
+  transform: scale(0);
+  transform-origin: top right;
+  transition: 0.15s;
+  z-index: 1;
+}
+.menu-active {
+  transform: scale(1);
+  transform-origin: top right;
+}
+.menu-item {
+  justify-content: flex-start;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  background-color: gainsboro;
+  gap: 1px;
+}
+.list-header {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem;
+  background-color: white;
+}
+.list-header > span:nth-of-type(1) {
+  margin-right: auto;
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: white;
+  padding: 0.6rem;
+  transition: 0.15s box-shadow;
+  cursor: default;
+}
+.user-card-active {
+  background-color: #62a6fe;
+  color: white;
+}
+.user-card > span:nth-of-type(1) {
+  margin-right: auto;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.user-card > .btn-grp {
+  display: flex;
+  flex-direction: column;
+}
+.user-card button {
+  padding: 0.1rem 0.6rem;
+}
+.user-card-hover:hover:not(.user-card-active) {
+  box-shadow: inset 0px 0px 4px 1px #62a6fe;
+}
+
+.chat-area {
+  background-color: white;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem;
+}
+.chat-area > textarea {
+  flex-grow: 1;
+}
+
+.tab {
+  display: flex;
+  gap: 1px;
+  border-bottom: 1px solid gainsboro;
+}
+.tab-item {
+  background-color: white;
+  padding: 0.5rem 0;
+  flex-grow: 1;
+  flex-basis: 0;
+  text-align: center;
+  box-sizing: border-box;
+  transition: 0.2s;
+  cursor: pointer;
+}
+.tab-item:hover:not(.active-tab) {
+  box-shadow: inset 0px 0px 4px 1px #62a6fe;
+}
+.active-tab {
+  background-color: #62a6fe;
+  color: white;
+}
+
+.toggle-btn {
+  width: 50px;
+  height: 15px;
+  box-sizing: content-box;
+  border: 2px solid grey;
+  border-radius: 0.3rem;
+  padding: 1.5px;
+  display: flex;
+  transition-duration: 0.2s;
+  transition-property: background-color;
+}
+.toggle-btn-active {
+  border: 2px solid #62a6fe;
+}
+.toggle-btn::before {
+  content: "";
+  height: 15px;
+  width: 15px;
+  background-color: grey;
+  border-radius: 0.2rem;
+  transition-duration: 0.2s;
+  transition-property: transform, background-color;
+}
+.toggle-btn-active::before {
+  background-color: #62a6fe;
+  transform: translateX(35px);
+}

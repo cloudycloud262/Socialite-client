@@ -1,0 +1,55 @@
+.posts {
+  flex-grow: 1;
+  position: relative;
+}
+.postWrapper {
+  display: flex;
+  background-color: white;
+  gap: 0.5rem;
+  padding: 0.6rem;
+}
+.postBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex-grow: 1;
+}
+.postHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.1rem;
+}
+.postImage {
+  width: 100%;
+  border-radius: 0.2rem;
+}
+.postHeader > :global(.menu-wrapper) {
+  font-size: 1.2rem;
+  margin-left: auto;
+  display: flex;
+}
+.community {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+.postHeader :global(.menu) {
+  top: 23px;
+}
+.pictureInputField {
+  display: none;
+}
+.imageInputWrapper {
+  margin-right: auto;
+}
+.engagement {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.2rem;
+}
+.engagement > div {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
