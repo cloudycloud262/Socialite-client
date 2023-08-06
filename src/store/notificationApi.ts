@@ -9,8 +9,11 @@ type notification = {
   updatedAt: string;
   __v: number;
   username: string;
+  communityId?: string;
+  communityTitle?: string;
   postId?: string;
   comment?: string;
+  displayPicture: string;
 };
 export type NfsArgs = {
   limit?: number;

@@ -22,24 +22,49 @@ const Notifications: FC<NfProps> = (props) => {
       <div className="list">
         {getNotification.data?.map((nf, index) => (
           <div className="user-card" key={index}>
-            <img src="/placeholderDp.png" alt="" className="dp-icon" />
+            <img
+              src={nf.displayPicture || "/placeholderDp.png"}
+              alt=""
+              className="dp-icon"
+            />
             <span className="fs-small fw-medium">
               <span onClick={() => navigate(`/post/${nf.postId}`)}>
-                {nf.type === "like" ? `${nf.username} liked your post` : null}
+                {nf.type === "like" ? (
+                  <>
+                    <b>{nf.username}</b> liked your post
+                  </>
+                ) : null}
               </span>
-              {nf.type === "follow"
-                ? `${nf.username} started following you`
-                : null}
-              {nf.type === "requested"
-                ? `${nf.username} requested to follow you`
-                : null}
-              {nf.type === "accepted"
-                ? `${nf.username} accepted your follow request`
-                : null}
+              {nf.type === "follow" ? (
+                <>
+                  <b>{nf.username}</b> started following you
+                </>
+              ) : null}
+              <span onClick={() => navigate(`/community/${nf.communityId}`)}>
+                {nf.type === "followcomm" ? (
+                  <>
+                    <b>{nf.username}</b> started following{" "}
+                    <b>{nf.communityTitle}</b>
+                  </>
+                ) : null}
+              </span>
+              {nf.type === "requested" ? (
+                <>
+                  <b>{nf.username}</b> requested to follow you
+                </>
+              ) : null}
+              {nf.type === "accepted" ? (
+                <>
+                  <b>{nf.username}</b> accepted your follow request
+                </>
+              ) : null}
               <span onClick={() => navigate(`/post/${nf.postId}`)}>
-                {nf.type === "comment"
-                  ? `${nf.username} commented on your post: ${nf.comment}`
-                  : null}
+                {nf.type === "comment" ? (
+                  <>
+                    <b>{nf.username}</b> commented on your post:{" "}
+                    <b>{nf.comment}</b>
+                  </>
+                ) : null}
               </span>
               <span className="disabled-text"> • </span>
               <span className="fs-small fw-medium disabled-text">

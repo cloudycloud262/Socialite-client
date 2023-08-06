@@ -95,6 +95,7 @@ const Login: FC = () => {
                 />
               )}
             </label>
+            <span className="fs-small fw-medium error">{errors.password}</span>{" "}
             <Link
               to="/password/forget"
               className="fs-small fw-medium"
@@ -102,7 +103,6 @@ const Login: FC = () => {
             >
               Forget Password?
             </Link>
-            <span className="fs-small fw-medium error">{errors.password}</span>
           </div>
           <button className="contained-btn">Login</button>
         </form>
@@ -115,7 +115,7 @@ const Login: FC = () => {
             className="icon-btn contained-btn"
             onClick={() =>
               window.open(
-                `${import.meta.env.VITE_BASE_URL}/api/auth/google`,
+                `${import.meta.env.VITE_BACKEND_URL}/auth/google`,
                 "_self"
               )
             }

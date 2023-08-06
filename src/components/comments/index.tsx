@@ -64,7 +64,11 @@ const Comments: FC = () => {
           {getComments.data?.map((comment, index) => (
             <div key={index}>
               <div className={postStyles.postWrapper}>
-                <img src="/placeholderDp.png" alt="" className="dp-icon" />
+                <img
+                  src={comment.displayPicture || "/placeholderDp.png"}
+                  alt=""
+                  className="dp-icon"
+                />
                 <div className={postStyles.postBody}>
                   <div
                     className={`${postStyles.postHeader} disabled-text fs-small fw-medium`}

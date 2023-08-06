@@ -1,5 +1,6 @@
-import { FC, ReactNode } from "react";
+import { FC, ReactNode, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { Community } from "../../store/communityApi";
 
 import PostForm from "../posts/postForm";
 import Posts from "../posts";
@@ -10,18 +11,56 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 type LayoutProps = {
   children: ReactNode;
+  community?: Community;
 };
 
 const Layout: FC<LayoutProps> = (props) => {
+  const [tab, setTab] = useState<"post" | "community">("post");
   const { pathname } = useLocation();
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.left}>
-        <PostForm type="create" />
+        <div className="tab">
+          <div
+            className={`tab-item fs-small fw-medium ${
+              tab === "post" ? "active-tab" : ""
+            }`}
+            onClick={() => setTab("post")}
+          >
+            Post
+          </div>
+          <div
+            className={`tab-item fs-small fw-medium ${
+              tab === "community" ? "active-tab" : ""
+            }`}
+            onClick={() => setTab("community")}
+          >
+            Community
+          </div>
+        </div>
+        <PostForm type="create" tab={tab} community={props.community} />
       </div>
       <div className={`${styles.center}`}>
-        <PostForm type="create" />
+        <div className="tab">
+          <div
+            className={`tab-item fs-small fw-medium ${
+              tab === "post" ? "active-tab" : ""
+            }`}
+            onClick={() => setTab("post")}
+          >
+            Post
+          </div>
+          <div
+            className={`tab-item fs-small fw-medium ${
+              tab === "community" ? "active-tab" : ""
+            }`}
+            onClick={() => setTab("community")}
+          >
+            Community
+          </div>
+        </div>
+        <PostForm type="create" tab={tab} community={props.community} />
         {props.children}
       </div>
       <div className={styles.right}>

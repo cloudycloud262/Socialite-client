@@ -10,6 +10,7 @@ import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import PeopleIcon from "@mui/icons-material/People";
 
 export interface Post {
   _id: string;
@@ -21,6 +22,10 @@ export interface Post {
   likesCount: number;
   commentsCount: number;
   isLiked: boolean;
+  displayPicture: string;
+  communityId: string;
+  communityTitle: string;
+  image: string;
   __v: number;
 }
 
@@ -43,8 +48,26 @@ type PostProps = {
 const Post: FC<PostProps> = (props) => {
   return (
     <div className={styles.postWrapper}>
-      <img src="/placeholderDp.png" alt="" className="dp-icon" />
+      <img
+        src={props.post.displayPicture || "/placeholderDp.png"}
+        alt=""
+        className="dp-icon"
+      />
       <div className={styles.postBody}>
+        {props.post.communityId ? (
+          <div
+            className={styles.community}
+            onClick={() =>
+              props.navigate &&
+              props.navigate(`/community/${props.post.communityId}`)
+            }
+          >
+            <PeopleIcon htmlColor="grey" sx={{ fontSize: "1.1rem" }} />
+            <span className="fs-small fw-medium disabled-text">
+              {props.post.communityTitle}
+            </span>
+          </div>
+        ) : null}
         <div
           className={`${styles.postHeader} disabled-text fs-small fw-medium`}
         >
@@ -138,6 +161,9 @@ const Post: FC<PostProps> = (props) => {
           ) : null}
         </div>
         <div className="fs-medium fw-medium">{props.post.body}</div>
+        {props.post.image ? (
+          <img src={props.post.image} alt="" className={styles.postImage} />
+        ) : null}
         <div
           className={`${styles.engagement} disabled-text fs-small fw-medium`}
         >

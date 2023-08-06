@@ -20,18 +20,43 @@
   position: relative;
   height: calc(160px + 35px);
 }
+.coverWrapper {
+  width: 100%;
+  height: 150px;
+  border-radius: 0.2rem;
+  position: relative;
+  overflow: hidden;
+}
 .cover {
   width: 100%;
   height: 150px;
   border-radius: 0.2rem;
 }
-.dp {
+.dpWrapper {
   height: 60px;
+  width: 60px;
   border-radius: 50%;
   position: relative;
   left: 10px;
   transform: translateY(-50%);
   border: 3px solid white;
+  overflow: hidden;
+}
+.dp {
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+}
+.pictureEdit {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.267);
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .profileActionBtn {
   position: absolute;
@@ -59,16 +84,10 @@
 }
 
 .editProfile {
-  transition: 0.2s;
-  transform: scaleY(0);
-  transform-origin: top;
   margin-top: 1rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-}
-.editProfileActive {
-  transform: scaleY(1);
 }
 .privacyWrapper {
   display: flex;
@@ -76,6 +95,9 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 0.3rem;
+}
+.pictureInputField {
+  display: none;
 }
 
 .posts {
@@ -109,6 +131,7 @@ svg.listCloseBtn {
 @media (width<700px) {
   .profile {
     flex-grow: 1;
+    min-width: 0px;
   }
   .posts {
     position: absolute;

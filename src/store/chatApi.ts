@@ -5,6 +5,7 @@ export interface Chat {
   uuid: string;
   userId: string;
   username: string;
+  displayPicture: string;
   unreadCount?: number;
   lastMessageSenderId?: string;
 }

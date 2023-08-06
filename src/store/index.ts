@@ -7,6 +7,7 @@ import { commentApi } from "./commentApi";
 import { notificationApi } from "./notificationApi";
 import { useDispatch } from "react-redux";
 import { chatApi } from "./chatApi";
+import { communityApi } from "./communityApi";
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ export const store = configureStore({
     [userApi.reducerPath]: userApi.reducer,
     [postApi.reducerPath]: postApi.reducer,
     [chatApi.reducerPath]: chatApi.reducer,
+    [communityApi.reducerPath]: communityApi.reducer,
     [commentApi.reducerPath]: commentApi.reducer,
     [notificationApi.reducerPath]: notificationApi.reducer,
   },
@@ -25,6 +27,7 @@ export const store = configureStore({
       postApi.middleware,
       chatApi.middleware,
       commentApi.middleware,
+      communityApi.middleware,
       notificationApi.middleware
     ),
 });

@@ -17,6 +17,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 type EditProfileProps = {
   showEditForm: boolean;
+  dp: string;
+  cover: string;
 };
 
 const EditProfile: FC<EditProfileProps> = (props) => {
@@ -64,11 +66,7 @@ const EditProfile: FC<EditProfileProps> = (props) => {
   }, [createUpdatePassLinkStatus.isSuccess]);
 
   return (
-    <div
-      className={`${styles.editProfile} ${
-        props.showEditForm ? styles.editProfileActive : ""
-      } form`}
-    >
+    <div className={`${styles.editProfile} form`}>
       <div className={styles.privacyWrapper}>
         <span className="fs-medium fw-medium">Private Account</span>
         <button
@@ -186,24 +184,24 @@ const EditProfile: FC<EditProfileProps> = (props) => {
           </div>
           <button
             className="contained-btn icon-btn"
-            onClick={() =>
+            onClick={() => {
+              const obj = {
+                email,
+                username,
+                currPassword,
+                displayPicture: props.dp,
+                coverPicture: props.cover,
+                isUpdatingPassword: showPasswordField,
+              };
               updateProfile(
                 showPasswordField
                   ? {
-                      email,
-                      username,
+                      ...obj,
                       password,
-                      currPassword,
-                      isUpdatingPassword: showPasswordField,
                     }
-                  : {
-                      email,
-                      username,
-                      currPassword,
-                      isUpdatingPassword: showPasswordField,
-                    }
-              )
-            }
+                  : obj
+              );
+            }}
           >
             <EditIcon fontSize="small" />
             <span className="fs-small fw-medium">Update</span>

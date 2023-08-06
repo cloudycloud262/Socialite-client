@@ -30,6 +30,9 @@
   display: none;
   border-bottom: 1px solid gainsboro;
 }
+.center > :global(.tab) {
+  display: none;
+}
 .nfLink {
   color: black;
   display: flex;
@@ -54,7 +57,8 @@
   .left {
     display: none;
   }
-  .center > :global(.create-post-form) {
+  .center > :global(.create-post-form),
+  .center > :global(.tab) {
     display: flex;
   }
   .center > :global(.list) {

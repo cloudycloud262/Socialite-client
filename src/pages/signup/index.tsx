@@ -134,7 +134,7 @@ const Signup: FC = () => {
             className="icon-btn contained-btn"
             onClick={() =>
               window.open(
-                `${import.meta.env.VITE_BASE_URL}/api/auth/google`,
+                `${import.meta.env.VITE_BACKEND_URL}/auth/google`,
                 "_self"
               )
             }

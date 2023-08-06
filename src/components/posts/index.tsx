@@ -16,6 +16,7 @@ import styles from "./index.module.css";
 
 export interface PostsArgs {
   userId?: string;
+  communityId?: string;
   page?: "home" | "explore";
   limit?: number;
 }
@@ -46,6 +47,7 @@ const Posts: React.FC<PostsProps> = (props) => {
       {getPosts.data?.map((post, index) =>
         editPostIndex === index ? (
           <PostForm
+            tab="post"
             type="update"
             post={post}
             key={index}

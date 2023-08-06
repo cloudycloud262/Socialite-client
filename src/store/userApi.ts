@@ -4,6 +4,7 @@ import { authApi } from "./authApi";
 interface Users {
   _id: string;
   username: string;
+  displayPicture: string;
 }
 interface User {
   _id: string;
@@ -11,14 +12,18 @@ interface User {
   followersCount: number;
   followingCount: number;
   isFollowing: boolean;
+  followingCommCount: number;
   isRequested: boolean;
   isPrivate: boolean;
   postsCount: number;
   chatId?: string;
+  displayPicture: string;
+  coverPicture: string;
+  communityCount: number;
 }
 type usersArgs = {
   username?: string;
-  id?: string | undefined;
+  id?: string;
   type:
     | "Search"
     | "Followers"

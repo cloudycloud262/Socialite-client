@@ -26,3 +26,16 @@ export const numberFormatter = (val: number): string => {
   const formatter = Intl.NumberFormat("en", { notation: "compact" });
   return formatter.format(val);
 };
+
+export const convertToBase64 = async (file: Blob): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(file);
+    fileReader.onload = () => {
+      resolve(fileReader.result as string);
+    };
+    fileReader.onerror = (error) => {
+      reject(error);
+    };
+  });
+};

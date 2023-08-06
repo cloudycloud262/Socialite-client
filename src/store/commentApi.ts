@@ -11,6 +11,7 @@ interface Comment {
   postId: string;
   createdAt: string;
   updatedAt: string;
+  displayPicture: string;
   __v: number;
   username: string;
 }

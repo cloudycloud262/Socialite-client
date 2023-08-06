@@ -11,6 +11,10 @@ interface Post {
   body: string;
 }
 
+interface Community {
+  title: string;
+}
+
 export const isEmail = (str: string): Boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(str);
@@ -77,6 +81,18 @@ export const postValidator = (args: Post): Post => {
 
   if (!args.body) {
     res.body = "Please write something before posting";
+  }
+
+  return res;
+};
+
+export const communityValidator = (args: Community): Community => {
+  const res = {
+    title: "",
+  };
+
+  if (!args.title) {
+    res.title = "Please name your community";
   }
 
   return res;

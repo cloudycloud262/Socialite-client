@@ -8,6 +8,7 @@ import useChatsSocketHooks from "../../hooks/useChatsSocketHooks";
 import { useGetChatsQuery } from "../../store/chatApi";
 import { useAppDispatch } from "../../store";
 import { setTotalUnreadCount } from "../../store/chatSlice";
+import { useGetCommunitiesQuery } from "../../store/communityApi";
 
 import Navbar from "./navbar";
 import Loading from "../loading";
@@ -18,11 +19,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
+import PeopleIcon from "@mui/icons-material/People";
 
 const Header: FC = () => {
   const [showSearchBar, setShowSearchBar] = useState(false);
   const [searchTerm, setSearchTerm] = useState({ term: "", debounced: "" });
   const [showAccMenu, setShowAccMenu] = useState(false);
+  const [searchType, setSearchType] = useState<"user" | "community">("user");
   const accountMenuRef = useRef<HTMLDivElement>(null);
   const searchFieldRef = useRef<HTMLInputElement>(null);
   const searchWrapperRef = useRef<HTMLDivElement>(null);
@@ -36,7 +39,11 @@ const Header: FC = () => {
       type: "Search",
       username: searchTerm.debounced,
     },
-    { skip: !searchTerm.debounced }
+    { skip: !searchTerm.debounced || searchType !== "user" }
+  );
+  const getCommunities = useGetCommunitiesQuery(
+    { title: searchTerm.debounced },
+    { skip: !searchTerm.debounced || searchType !== "community" }
   );
   const getChats = useGetChatsQuery();
   const [logout, logoutStatus] = useLogoutMutation();
@@ -100,26 +107,53 @@ const Header: FC = () => {
               ref={searchFieldRef}
               onFocus={() => setShowSearchBar(true)}
             />
-            {searchTerm ? (
+            {searchTerm.term ? (
               <CloseIcon
                 fontSize="small"
                 htmlColor="grey"
                 onClick={(e) => {
                   e.preventDefault();
+                  setSearchTerm((prev) => ({ ...prev, term: "" }));
                   setShowSearchBar(false);
                 }}
               />
             ) : null}
           </label>
-          {searchTerm && showSearchBar ? (
+          {searchTerm.term && showSearchBar ? (
             <div className={`${styles.searchMenu} list`}>
-              {getUsers.isLoading || getUsers.isFetching ? (
+              <div className="tab">
+                <div
+                  className={`tab-item fs-medium fw-medium ${
+                    searchType === "user" ? "active-tab" : ""
+                  }`}
+                  onClick={() => setSearchType("user")}
+                >
+                  User
+                </div>
+                <div
+                  className={`tab-item fs-small fw-medium ${
+                    searchType === "community" ? "active-tab" : ""
+                  }`}
+                  onClick={() => setSearchType("community")}
+                >
+                  Community
+                </div>
+              </div>
+              {getUsers.isLoading ||
+              getUsers.isFetching ||
+              getCommunities.isLoading ||
+              getCommunities.isFetching ? (
                 <div className={styles.searchLoading}>
                   <Loading />
                 </div>
               ) : null}
-              {getUsers.currentData?.length === 0 ? (
-                <div className={`fs-medium fw-medium ${styles.searchEmpty}`}>
+              {searchType === "user" && getUsers.currentData?.length === 0 ? (
+                <div className={`fs-small fw-medium ${styles.searchEmpty}`}>
+                  No Results Found
+                </div>
+              ) : searchType === "community" &&
+                getCommunities.currentData?.length === 0 ? (
+                <div className={`fs-small fw-medium ${styles.searchEmpty}`}>
                   No Results Found
                 </div>
               ) : null}
@@ -135,8 +169,26 @@ const Header: FC = () => {
                     setShowSearchBar(false);
                   }}
                 >
-                  <img src="/placeholderDp.png" alt="" className="dp-icon" />
+                  <img
+                    src={user.displayPicture || "/placeholderDp.png"}
+                    alt=""
+                    className="dp-icon"
+                  />
                   <span className="fw-medium fs-small">{user.username}</span>
+                </div>
+              ))}
+              {getCommunities.currentData?.map((community, index) => (
+                <div
+                  className="user-card user-card-hover"
+                  key={index}
+                  onClick={() => {
+                    navigate(`/community/${community._id}`);
+                    setSearchTerm((prev) => ({ ...prev, term: "" }));
+                    setShowSearchBar(false);
+                  }}
+                >
+                  <PeopleIcon htmlColor="grey" fontSize="small" />
+                  <span className="fw-medium fs-small">{community.title}</span>
                 </div>
               ))}
             </div>
@@ -158,7 +210,11 @@ const Header: FC = () => {
             className={styles.account}
             onClick={() => setShowAccMenu((prev) => !prev)}
           >
-            <img src="/placeholderDp.png" alt="" className="dp-icon" />
+            <img
+              src={currentUser.data?.displayPicture || "/placeholderDp.png"}
+              alt=""
+              className="dp-icon"
+            />
             <span className="fs-medium fw-medium">
               {currentUser.data?.username}
             </span>

@@ -8,6 +8,8 @@ import Requests from "./pages/requests";
 import Notifications from "./pages/notifications";
 import Chats from "./pages/chats";
 import Account from "./pages/account";
+import Community from "./pages/community";
+import CommunityInfo from "./pages/community/communityInfo";
 import Comments from "./components/comments";
 import Header from "./components/header";
 import BottomNav from "./components/header/bottomNav";
@@ -85,6 +87,22 @@ const App: FC = () => {
           element={
             <ProtectedRoute>
               <Account />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/community/:id"
+          element={
+            <ProtectedRoute>
+              <Community />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/community/:id/info"
+          element={
+            <ProtectedRoute>
+              <CommunityInfo />
             </ProtectedRoute>
           }
         />

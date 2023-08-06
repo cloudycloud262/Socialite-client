@@ -21,6 +21,8 @@ interface User {
   nfReadTime: string;
   hasPassword: boolean;
   isVerified: boolean;
+  displayPicture: string;
+  coverPicture: string;
   __v: number;
 }
 interface UpdateArgs {
@@ -29,6 +31,8 @@ interface UpdateArgs {
   password?: string;
   currPassword: string;
   isUpdatingPassword: boolean;
+  displayPicture: string;
+  coverPicture: string;
 }
 
 export const authApi = createApi({

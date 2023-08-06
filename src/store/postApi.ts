@@ -6,10 +6,13 @@ import { userApi } from "./userApi";
 interface CreatePostArgs {
   body: string;
   userId: string;
+  image: string;
+  communityId?: string;
 }
 interface UpdatePostArgs {
   id: string;
   body: string;
+  image: string;
 }
 interface LikeArgs {
   id: string;
@@ -30,7 +33,7 @@ export const postApi = createApi({
         credentials: "include",
       }),
       providesTags: (_res, _err, args) => [
-        { type: "Posts", id: args.userId || args.page },
+        { type: "Posts", id: args.userId || args.communityId || args.page },
       ],
     }),
     getPost: builder.query<Post, string>({
@@ -61,6 +64,7 @@ export const postApi = createApi({
       },
       invalidatesTags: (_res, _err, args) => [
         { type: "Posts", id: args.userId },
+        { type: "Posts", id: args.communityId },
       ],
     }),
     updatePost: builder.mutation<string, UpdatePostArgs>({
