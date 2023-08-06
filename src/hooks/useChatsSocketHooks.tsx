@@ -2,11 +2,12 @@ import { useEffect } from "react";
 import socket from "../socket";
 import { Chat, chatApi } from "../store/chatApi";
 import { RootState, useAppDispatch } from "../store";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import {
   incrementTotalUnreadCount,
   setActiveChatIndex,
   setCurrUnread,
+  setNewChatUserId,
   setRender,
 } from "../store/chatSlice";
 import { useSelector } from "react-redux";
@@ -19,7 +20,6 @@ const useChatsSocketHooks = (): void => {
   );
   const { pathname } = useLocation();
   let i = -1;
-  const navigate = useNavigate();
 
   useEffect(() => {
     socket.on("add-message", async (messageObj, extraObj) => {
@@ -92,7 +92,7 @@ const useChatsSocketHooks = (): void => {
               draft.unshift(newChat);
               if (newChatUserId === messageObj.senderId) {
                 dispatch(setActiveChatIndex(0));
-                navigate(`/chats/${messageObj.chatId}`);
+                dispatch(setNewChatUserId(""));
               } else {
                 activeChatIndex >= 0 &&
                   dispatch(setActiveChatIndex(activeChatIndex + 1));
