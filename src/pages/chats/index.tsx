@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useGetUserQuery } from "../../store/userApi";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import {
@@ -15,6 +15,7 @@ import {
   incrementTotalUnreadCount,
   setActiveChatIndex,
   setCurrUnread,
+  setNewChatUserId,
 } from "../../store/chatSlice";
 import { useSelector } from "react-redux";
 
@@ -26,7 +27,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import SendIcon from "@mui/icons-material/Send";
 
 const Chats: FC = () => {
-  const searchParams = Object.fromEntries(useSearchParams()[0]);
   const [messageBody, setMessageBody] = useState("");
   const [showChatRoom, setShowChatRoom] = useState(false);
   const { id } = useParams();
@@ -36,9 +36,10 @@ const Chats: FC = () => {
     activeChatIndex,
     currUnread,
     render: _render,
+    newChatUserId,
   } = useSelector((state: RootState) => state.chatSlice);
 
-  const getUser = useGetUserQuery(searchParams.userId ?? skipToken);
+  const getUser = useGetUserQuery(newChatUserId ?? skipToken);
   const currentUser = useGetCurrentUserQuery();
   const getChats = useGetChatsQuery();
   const getMessages = useGetMessagesQuery(
@@ -84,11 +85,12 @@ const Chats: FC = () => {
       })
     );
   }, [getMessages.isSuccess, id]);
+
   const sendMessageHandler = () => {
     if (
       id &&
       currentUser.data &&
-      (getChats.data?.[activeChatIndex]?.userId || searchParams.userId)
+      (getChats.data?.[activeChatIndex]?.userId || newChatUserId)
     ) {
       const messageObj = {
         body: messageBody,
@@ -96,17 +98,17 @@ const Chats: FC = () => {
         senderId: currentUser.data._id,
       };
       socket.emit("send-message", messageObj, {
-        isNew: Boolean(searchParams.userId),
-        receiverId:
-          getChats.data?.[activeChatIndex]?.userId || searchParams.userId,
+        isNew: Boolean(newChatUserId),
+        receiverId: getChats.data?.[activeChatIndex]?.userId || newChatUserId,
       });
-      if (searchParams.userId) {
+      if (newChatUserId) {
         dispatch(
           chatApi.util.updateQueryData("getChats", undefined, (draft) => [
             {
               username: getUser.data ? getUser.data.username : "",
+              displayPicture: "",
               uuid: messageObj.chatId,
-              userId: searchParams.userId,
+              userId: newChatUserId,
               unreadCount: 1,
               lastMessageSenderId: currentUser.data?._id,
             },
@@ -139,7 +141,7 @@ const Chats: FC = () => {
         })
       );
       setMessageBody("");
-      navigate(`/chats/${id}`);
+      dispatch(setNewChatUserId(""));
     }
   };
 
@@ -161,7 +163,11 @@ const Chats: FC = () => {
                 navigate(`/chats/${chat.uuid}`);
               }}
             >
-              <img src="/placeholderDp.png" alt="" className="dp-icon" />
+              <img
+                src={chat.displayPicture || "/placeholderDp.png"}
+                alt=""
+                className="dp-icon"
+              />
               <div className={styles.listUsername}>
                 <span className="fs-medium fw-medium">{chat.username}</span>
                 {index !== activeChatIndex && typers.get(chat.userId) ? (
@@ -184,9 +190,17 @@ const Chats: FC = () => {
       <div
         className={`${styles.room} ${showChatRoom ? styles.roomActive : ""}`}
       >
-        {activeChatIndex >= 0 || searchParams.userId ? (
+        {activeChatIndex >= 0 || newChatUserId ? (
           <div className={`user-card ${styles.roomHeader}`}>
-            <img src="/placeholderDp.png" alt="" className="dp-icon" />
+            <img
+              src={
+                getChats.data?.[activeChatIndex]?.displayPicture ||
+                getUser.data?.displayPicture ||
+                "/placeholderDp.png"
+              }
+              alt=""
+              className="dp-icon"
+            />
             <span className="fs-medium fw-medium">
               {getChats.data?.[activeChatIndex]?.username ||
                 getUser.data?.username}
@@ -199,13 +213,13 @@ const Chats: FC = () => {
             />
           </div>
         ) : null}
-        {activeChatIndex >= 0 || searchParams.userId ? (
+        {activeChatIndex >= 0 || newChatUserId ? (
           <div className={styles.chats}>
             {getMessages.isFetching || getMessages.isLoading ? (
               <Loading />
             ) : null}
             {typers.get(getChats.data?.[activeChatIndex]?.userId) ||
-            typers.get(searchParams.userId) ? (
+            typers.get(newChatUserId) ? (
               <div
                 className={`${styles.bubble} ${styles.receivedBubble} ${styles.isTyping}`}
               >
@@ -260,7 +274,7 @@ const Chats: FC = () => {
         ) : (
           <div className={styles.placeholder}>Click on a chat</div>
         )}
-        {activeChatIndex >= 0 || searchParams.userId ? (
+        {activeChatIndex >= 0 || newChatUserId ? (
           <div className="chat-area">
             <Textarea
               value={messageBody}
@@ -270,16 +284,14 @@ const Chats: FC = () => {
               onFocus={() =>
                 socket.emit(
                   "is-typing",
-                  getChats.data?.[activeChatIndex]?.userId ||
-                    searchParams.userId,
+                  getChats.data?.[activeChatIndex]?.userId || newChatUserId,
                   true
                 )
               }
               onBlur={() =>
                 socket.emit(
                   "is-typing",
-                  getChats.data?.[activeChatIndex]?.userId ||
-                    searchParams.userId,
+                  getChats.data?.[activeChatIndex]?.userId || newChatUserId,
                   false
                 )
               }
