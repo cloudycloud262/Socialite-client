@@ -1,4 +1,4 @@
-import { FC, Dispatch, SetStateAction } from "react";
+import { FC, Dispatch, SetStateAction, ChangeEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetCurrentUserQuery } from "../../store/authApi";
 import {
@@ -9,23 +9,32 @@ import {
 } from "../../store/userApi";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { v4 as uuidv4 } from "uuid";
+import { convertToBase64 } from "../../utils/formatters";
+import { useDispatch } from "react-redux";
 
 import Loading from "../../components/loading";
 
 import styles from "./index.module.css";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import { setNewChatUserId } from "../../store/chatSlice";
 
 type ProfileProps = {
   showEditForm: boolean;
   setShowEditForm: Dispatch<SetStateAction<boolean>>;
   setShowPosts: Dispatch<SetStateAction<boolean>>;
   setNav: Dispatch<SetStateAction<string>>;
+  dp: string;
+  setDp: Dispatch<SetStateAction<string>>;
+  cover: string;
+  setCover: Dispatch<SetStateAction<string>>;
 };
 
 const Profile: FC<ProfileProps> = (props) => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const currentUser = useGetCurrentUserQuery();
   const getUser = useGetUserQuery((id || currentUser.data?._id) ?? skipToken);
@@ -33,12 +42,67 @@ const Profile: FC<ProfileProps> = (props) => {
   const [unfollow] = useUnfollowMutation();
   const [removeRequest] = useRemoveRequestMutation();
 
+  const handleImageChange = async (
+    e: ChangeEvent<HTMLInputElement>,
+    type: string
+  ) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const base64 = await convertToBase64(file);
+      if (type === "dp") {
+        props.setDp(base64);
+      } else if (type === "cover") {
+        props.setCover(base64);
+      }
+    }
+  };
+
   return (
     <>
       <div className={styles.dpContainer}>
         {getUser.isFetching || getUser.isLoading ? <Loading /> : null}
-        <img src="/placeholderCover.jpg" alt="" className={styles.cover} />
-        <img src="/placeholderDp.png" alt="" className={styles.dp} />
+        <div className={styles.coverWrapper}>
+          {props.showEditForm ? (
+            <label htmlFor="cover-field">
+              <input
+                type="file"
+                id="cover-field"
+                onChange={(e) => handleImageChange(e, "cover")}
+                accept=".jpeg, .png, .jpg"
+                className={styles.pictureInputField}
+              />
+              <div className={styles.pictureEdit}>
+                <EditOutlinedIcon htmlColor="white" />
+              </div>
+            </label>
+          ) : null}
+          <img
+            src={props.cover || "/placeholderCover.jpg"}
+            alt=""
+            className={styles.cover}
+          />
+        </div>
+        <div className={styles.dpWrapper}>
+          {props.showEditForm ? (
+            <label htmlFor="dp-field">
+              <input
+                type="file"
+                id="dp-field"
+                onChange={(e) => handleImageChange(e, "dp")}
+                accept=".jpeg, .png, .jpg"
+                className={styles.pictureInputField}
+              />
+              <div className={styles.pictureEdit}>
+                <EditOutlinedIcon htmlColor="white" fontSize="small" />
+              </div>
+            </label>
+          ) : null}
+          <img
+            src={props.dp || "/placeholderDp.png"}
+            alt=""
+            className={styles.dp}
+          />
+        </div>
         <div className={`btn-grp ${styles.profileActionBtn}`}>
           {id ? (
             <div className="btn-grp">
@@ -46,11 +110,12 @@ const Profile: FC<ProfileProps> = (props) => {
                 className="outlined-btn"
                 onClick={() => {
                   if (getUser.data) {
-                    getUser.data?.chatId
-                      ? navigate(`/chats/${getUser.data?.chatId}`)
-                      : navigate(
-                          `/chats/${uuidv4()}?userId=${getUser.data._id}`
-                        );
+                    if (getUser.data?.chatId) {
+                      navigate(`/chats/${getUser.data?.chatId}`);
+                    } else {
+                      navigate(`/chats/${uuidv4()}`);
+                      dispatch(setNewChatUserId(getUser.data._id));
+                    }
                   }
                 }}
               >
@@ -103,42 +168,70 @@ const Profile: FC<ProfileProps> = (props) => {
           )}
         </div>
       </div>
-      <div className="fw-medium fs-medium">{getUser.data?.username}</div>
-      <div className={styles.connections}>
-        <button
-          onClick={() => {
-            props.setShowPosts(true);
-            props.setNav("Followers");
-          }}
-        >
-          <span className="fs-medium fw-medium">
-            {getUser.data?.followersCount}
-          </span>
-          <span className="fs-small fw-thin">Followers</span>
-        </button>
-        <button
-          onClick={() => {
-            props.setShowPosts(true);
-            props.setNav("Following");
-          }}
-        >
-          <span className="fs-medium fw-medium">
-            {getUser.data?.followingCount}
-          </span>
-          <span className="fs-small fw-thin">Following</span>
-        </button>
-        <button
-          onClick={() => {
-            props.setShowPosts(true);
-            props.setNav("Posts");
-          }}
-        >
-          <span className="fs-medium fw-medium">
-            {getUser.data?.postsCount}
-          </span>
-          <span className="fs-small fw-thin">Posts</span>
-        </button>
-      </div>
+      {props.showEditForm ? null : (
+        <>
+          <div className="fw-medium fs-medium">{getUser.data?.username}</div>
+          <div className={styles.connections}>
+            <button
+              onClick={() => {
+                props.setShowPosts(true);
+                props.setNav("Followers");
+              }}
+            >
+              <span className="fs-medium fw-medium">
+                {getUser.data?.followersCount}
+              </span>
+              <span className="fs-small fw-thin">Followers</span>
+            </button>
+            <button
+              onClick={() => {
+                props.setShowPosts(true);
+                props.setNav("Following");
+              }}
+            >
+              <span className="fs-medium fw-medium">
+                {getUser.data?.followingCount}
+              </span>
+              <span className="fs-small fw-thin">Following</span>
+            </button>
+            <button
+              onClick={() => {
+                props.setShowPosts(true);
+                props.setNav("Posts");
+              }}
+            >
+              <span className="fs-medium fw-medium">
+                {getUser.data?.postsCount}
+              </span>
+              <span className="fs-small fw-thin">Posts</span>
+            </button>
+          </div>
+          <div className={styles.connections}>
+            <button
+              onClick={() => {
+                props.setShowPosts(true);
+                props.setNav("Community Created");
+              }}
+            >
+              <span className="fs-medium fw-medium">
+                {getUser.data?.communityCount}
+              </span>
+              <span className="fs-small fw-thin">Community Created</span>
+            </button>
+            <button
+              onClick={() => {
+                props.setShowPosts(true);
+                props.setNav("Community Following");
+              }}
+            >
+              <span className="fs-medium fw-medium">
+                {getUser.data?.followingCommCount}
+              </span>
+              <span className="fs-small fw-thin">Community Following</span>
+            </button>
+          </div>
+        </>
+      )}
     </>
   );
 };
