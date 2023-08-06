@@ -1,4 +1,0 @@
-.wrapper > :global(.list) > :global(.list-header) {
-  position: sticky;
-  top: 0;
-}
