@@ -35,7 +35,7 @@ export const authApi = createApi({
   reducerPath: "auth",
   tagTypes: ["CurrentUser"],
   baseQuery: fetchBaseQuery({
-    baseUrl: `${import.meta.env.VITE_CORS_ANYWHERE_URL}/${import.meta.env.VITE_BACKEND_URL}/auth`,
+    baseUrl: `${import.meta.env.VITE_BASE_URL}/api/auth`,
   }),
   endpoints: (builder) => ({
     getCurrentUser: builder.query<User, void>({
