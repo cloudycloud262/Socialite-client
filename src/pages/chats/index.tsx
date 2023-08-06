@@ -55,7 +55,12 @@ const Chats: FC = () => {
   useEffect(() => {
     return () => {
       dispatch(setActiveChatIndex(-1));
-      if (newChatUserId) {
+    };
+  }, []);
+  useEffect(() => {
+    const x = newChatUserId;
+    return () => {
+      if (x) {
         dispatch(
           chatApi.util.updateQueryData("getChats", undefined, (draft) =>
             draft.filter((chat) => chat.uuid !== id)
@@ -63,7 +68,7 @@ const Chats: FC = () => {
         );
       }
     };
-  }, []);
+  }, [newChatUserId]);
   useEffect(() => {
     getUser.isSuccess &&
       id &&
