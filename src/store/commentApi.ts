@@ -19,7 +19,7 @@ export const commentApi = createApi({
   reducerPath: "comment",
   tagTypes: ["Comments"],
   baseQuery: fetchBaseQuery({
-    baseUrl: `${import.meta.env.VITE_BASE_URL}/comment`,
+    baseUrl: `${import.meta.env.VITE_BASE_URL}/api/comment`,
   }),
   endpoints: (builder) => ({
     getComments: builder.query<Comment[], string>({
