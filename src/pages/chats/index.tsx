@@ -126,21 +126,7 @@ const Chats: FC = () => {
         isNew: Boolean(newChatUserId),
         receiverId: getChats.data?.[activeChatIndex]?.userId || newChatUserId,
       });
-      if (newChatUserId) {
-        dispatch(
-          chatApi.util.updateQueryData("getChats", undefined, (draft) => [
-            {
-              username: getUser.data ? getUser.data.username : "",
-              displayPicture: "",
-              uuid: messageObj.chatId,
-              userId: newChatUserId,
-              unreadCount: 1,
-              lastMessageSenderId: currentUser.data?._id,
-            },
-            ...draft,
-          ])
-        );
-      } else {
+      if (!newChatUserId) {
         dispatch(
           chatApi.util.updateQueryData("getChats", undefined, (draft) => {
             draft[activeChatIndex].unreadCount =
