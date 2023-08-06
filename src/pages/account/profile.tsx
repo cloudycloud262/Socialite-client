@@ -113,7 +113,7 @@ const Profile: FC<ProfileProps> = (props) => {
                     if (getUser.data?.chatId) {
                       navigate(`/chats/${getUser.data?.chatId}`);
                     } else {
-                      navigate(`/chats/${uuidv4()}`);
+                      navigate(`/chats/${uuidv4()}?new=true`);
                       dispatch(setNewChatUserId(getUser.data._id));
                     }
                   }
