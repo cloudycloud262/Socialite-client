@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useGetUserQuery } from "../../store/userApi";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import {
@@ -27,7 +27,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import SendIcon from "@mui/icons-material/Send";
 
 const Chats: FC = () => {
-  const searchParams = Object.fromEntries(useSearchParams()[0]);
   const [messageBody, setMessageBody] = useState("");
   const [showChatRoom, setShowChatRoom] = useState(false);
   const { id } = useParams();
@@ -44,8 +43,7 @@ const Chats: FC = () => {
   const currentUser = useGetCurrentUserQuery();
   const getChats = useGetChatsQuery();
   const getMessages = useGetMessagesQuery(
-    getChats.data?.[activeChatIndex]?.uuid ?? skipToken,
-    { skip: Boolean(searchParams.new) }
+    getChats.data?.[activeChatIndex]?.uuid ?? skipToken
   );
 
   useEffect(() => {
