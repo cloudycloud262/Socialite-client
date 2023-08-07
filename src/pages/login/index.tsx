@@ -115,7 +115,7 @@ const Login: FC = () => {
             className="icon-btn contained-btn"
             onClick={() =>
               window.open(
-                `${import.meta.env.VITE_API_REWRITE_URL}/auth/google`,
+                `${import.meta.env.VITE_BACKEND_URL}/auth/google`,
                 "_self"
               )
             }
