@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useGetUserQuery } from "../../store/userApi";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import {
@@ -15,7 +15,6 @@ import {
   incrementTotalUnreadCount,
   setActiveChatIndex,
   setCurrUnread,
-  setNewChatUserId,
 } from "../../store/chatSlice";
 import { useSelector } from "react-redux";
 
@@ -27,6 +26,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import SendIcon from "@mui/icons-material/Send";
 
 const Chats: FC = () => {
+  const searchParams = Object.fromEntries(useSearchParams()[0]);
   const [messageBody, setMessageBody] = useState("");
   const [showChatRoom, setShowChatRoom] = useState(false);
   const { id } = useParams();
@@ -36,10 +36,9 @@ const Chats: FC = () => {
     activeChatIndex,
     currUnread,
     render: _render,
-    newChatUserId,
   } = useSelector((state: RootState) => state.chatSlice);
 
-  const getUser = useGetUserQuery(newChatUserId ?? skipToken);
+  const getUser = useGetUserQuery(searchParams.userId ?? skipToken);
   const currentUser = useGetCurrentUserQuery();
   const getChats = useGetChatsQuery();
   const getMessages = useGetMessagesQuery(
@@ -57,36 +56,6 @@ const Chats: FC = () => {
       dispatch(setActiveChatIndex(-1));
     };
   }, []);
-  useEffect(() => {
-    const x = newChatUserId;
-    return () => {
-      if (x) {
-        dispatch(
-          chatApi.util.updateQueryData("getChats", undefined, (draft) =>
-            draft.filter((chat) => chat.uuid !== id)
-          )
-        );
-      }
-    };
-  }, [newChatUserId]);
-  useEffect(() => {
-    getUser.isSuccess &&
-      id &&
-      dispatch(
-        chatApi.util.updateQueryData("getChats", undefined, (draft) => [
-          {
-            username: getUser.data ? getUser.data.username : "",
-            displayPicture: getUser.data.displayPicture,
-            uuid: id,
-            userId: newChatUserId,
-            unreadCount: 0,
-            lastMessageSenderId: "",
-          },
-          ...draft,
-        ])
-      );
-    dispatch(setActiveChatIndex(0));
-  }, [getUser.isSuccess]);
   useEffect(() => {
     if (
       activeChatIndex >= 0 &&
@@ -120,7 +89,7 @@ const Chats: FC = () => {
     if (
       id &&
       currentUser.data &&
-      (getChats.data?.[activeChatIndex]?.userId || newChatUserId)
+      (getChats.data?.[activeChatIndex]?.userId || searchParams.userId)
     ) {
       const messageObj = {
         body: messageBody,
@@ -128,10 +97,26 @@ const Chats: FC = () => {
         senderId: currentUser.data._id,
       };
       socket.emit("send-message", messageObj, {
-        isNew: Boolean(newChatUserId),
-        receiverId: getChats.data?.[activeChatIndex]?.userId || newChatUserId,
+        isNew: Boolean(searchParams.userId),
+        receiverId:
+          getChats.data?.[activeChatIndex]?.userId || searchParams.userId,
       });
-      if (!newChatUserId) {
+      if (searchParams.userId) {
+        dispatch(
+          chatApi.util.updateQueryData("getChats", undefined, (draft) => [
+            {
+              username: getUser.data ? getUser.data.username : "",
+              displayPicture: "",
+              uuid: messageObj.chatId,
+              userId: searchParams.userId,
+              unreadCount: 1,
+              lastMessageSenderId: currentUser.data?._id,
+            },
+            ...draft,
+          ])
+        );
+        dispatch(chatApi.util.upsertQueryData("getMessages", id, [messageObj]));
+      } else {
         dispatch(
           chatApi.util.updateQueryData("getChats", undefined, (draft) => {
             draft[activeChatIndex].unreadCount =
@@ -143,13 +128,14 @@ const Chats: FC = () => {
             }
           })
         );
+        dispatch(
+          chatApi.util.updateQueryData("getMessages", id, (draft) => {
+            draft.push(messageObj);
+          })
+        );
       }
       dispatch(setActiveChatIndex(0));
-      dispatch(
-        chatApi.util.updateQueryData("getMessages", id, (draft) => {
-          draft.push(messageObj);
-        })
-      );
+
       dispatch(
         setCurrUnread({
           count: currUnread.count + 1,
@@ -157,7 +143,7 @@ const Chats: FC = () => {
         })
       );
       setMessageBody("");
-      dispatch(setNewChatUserId(""));
+      navigate(`/chats/${id}`);
     }
   };
 
@@ -206,7 +192,7 @@ const Chats: FC = () => {
       <div
         className={`${styles.room} ${showChatRoom ? styles.roomActive : ""}`}
       >
-        {activeChatIndex >= 0 || newChatUserId ? (
+        {activeChatIndex >= 0 || searchParams.userId ? (
           <div className={`user-card ${styles.roomHeader}`}>
             <img
               src={
@@ -229,13 +215,13 @@ const Chats: FC = () => {
             />
           </div>
         ) : null}
-        {activeChatIndex >= 0 || newChatUserId ? (
+        {activeChatIndex >= 0 || searchParams.userId ? (
           <div className={styles.chats}>
             {getMessages.isFetching || getMessages.isLoading ? (
               <Loading />
             ) : null}
             {typers.get(getChats.data?.[activeChatIndex]?.userId) ||
-            typers.get(newChatUserId) ? (
+            typers.get(searchParams.userId) ? (
               <div
                 className={`${styles.bubble} ${styles.receivedBubble} ${styles.isTyping}`}
               >
@@ -290,7 +276,7 @@ const Chats: FC = () => {
         ) : (
           <div className={styles.placeholder}>Click on a chat</div>
         )}
-        {activeChatIndex >= 0 || newChatUserId ? (
+        {activeChatIndex >= 0 || searchParams.userId ? (
           <div className="chat-area">
             <Textarea
               value={messageBody}
@@ -300,14 +286,16 @@ const Chats: FC = () => {
               onFocus={() =>
                 socket.emit(
                   "is-typing",
-                  getChats.data?.[activeChatIndex]?.userId || newChatUserId,
+                  getChats.data?.[activeChatIndex]?.userId ||
+                    searchParams.userId,
                   true
                 )
               }
               onBlur={() =>
                 socket.emit(
                   "is-typing",
-                  getChats.data?.[activeChatIndex]?.userId || newChatUserId,
+                  getChats.data?.[activeChatIndex]?.userId ||
+                    searchParams.userId,
                   false
                 )
               }

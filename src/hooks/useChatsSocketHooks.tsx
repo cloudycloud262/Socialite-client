@@ -2,12 +2,11 @@ import { useEffect } from "react";
 import socket from "../socket";
 import { Chat, chatApi } from "../store/chatApi";
 import { RootState, useAppDispatch } from "../store";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import {
   incrementTotalUnreadCount,
   setActiveChatIndex,
   setCurrUnread,
-  setNewChatUserId,
   setRender,
 } from "../store/chatSlice";
 import { useSelector } from "react-redux";
@@ -15,11 +14,13 @@ import { typers } from "../utils/variables";
 
 const useChatsSocketHooks = (): void => {
   const dispatch = useAppDispatch();
-  const { currUnread, activeChatIndex, newChatUserId } = useSelector(
+  const { currUnread, activeChatIndex } = useSelector(
     (state: RootState) => state.chatSlice
   );
+  const searchParams = Object.fromEntries(useSearchParams()[0]);
   const { pathname } = useLocation();
   let i = -1;
+  const navigate = useNavigate();
 
   useEffect(() => {
     socket.on("add-message", async (messageObj, extraObj) => {
@@ -63,7 +64,7 @@ const useChatsSocketHooks = (): void => {
         );
         dispatch(setActiveChatIndex(0));
       } else {
-        if (newChatUserId === messageObj.senderId) {
+        if (searchParams.userId === messageObj.senderId) {
           socket.emit("unread-status", messageObj, extraObj, false);
         } else {
           socket.emit("unread-status", messageObj, extraObj, true);
@@ -71,7 +72,7 @@ const useChatsSocketHooks = (): void => {
         let newChat: Chat;
         if (extraObj.isNew) {
           const res = await fetch(
-            `${import.meta.env.VITE_BASE_URL}/api/user/${messageObj.senderId}`,
+            `${import.meta.env.VITE_BACKEND_URL}/user/${messageObj.senderId}`,
             { credentials: "include" }
           );
           const username = (await res.json()).username;
@@ -80,9 +81,11 @@ const useChatsSocketHooks = (): void => {
             uuid: messageObj.chatId,
             userId: messageObj.senderId,
             displayPicture: messageObj.displayPicture,
-            unreadCount: newChatUserId === messageObj.senderId ? 0 : 1,
+            unreadCount: searchParams.userId === messageObj.senderId ? 0 : 1,
             lastMessageSenderId:
-              newChatUserId === messageObj.senderId ? "" : messageObj.senderId,
+              searchParams.userId === messageObj.senderId
+                ? ""
+                : messageObj.senderId,
           };
         }
         dispatch(incrementTotalUnreadCount(1));
@@ -90,9 +93,9 @@ const useChatsSocketHooks = (): void => {
           chatApi.util.updateQueryData("getChats", undefined, (draft) => {
             if (extraObj.isNew) {
               draft.unshift(newChat);
-              if (newChatUserId === messageObj.senderId) {
+              if (searchParams.userId === messageObj.senderId) {
                 dispatch(setActiveChatIndex(0));
-                dispatch(setNewChatUserId(""));
+                navigate(`/chats/${messageObj.chatId}`);
               } else {
                 activeChatIndex >= 0 &&
                   dispatch(setActiveChatIndex(activeChatIndex + 1));

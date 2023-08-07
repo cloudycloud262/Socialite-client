@@ -23,7 +23,7 @@ export const notificationApi = createApi({
   reducerPath: "notificationApi",
   tagTypes: ["Notifications", "UnreadCount"],
   baseQuery: fetchBaseQuery({
-    baseUrl: `${import.meta.env.VITE_BASE_URL}/api/notification`,
+    baseUrl: `${import.meta.env.VITE_BACKEND_URL}/notification`,
   }),
   endpoints: (builder) => ({
     getNotifications: builder.query<notification[], NfsArgs>({

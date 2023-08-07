@@ -10,7 +10,6 @@ import {
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { v4 as uuidv4 } from "uuid";
 import { convertToBase64 } from "../../utils/formatters";
-import { useDispatch } from "react-redux";
 
 import Loading from "../../components/loading";
 
@@ -18,7 +17,6 @@ import styles from "./index.module.css";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import { setNewChatUserId } from "../../store/chatSlice";
 
 type ProfileProps = {
   showEditForm: boolean;
@@ -34,7 +32,6 @@ type ProfileProps = {
 const Profile: FC<ProfileProps> = (props) => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const currentUser = useGetCurrentUserQuery();
   const getUser = useGetUserQuery((id || currentUser.data?._id) ?? skipToken);
@@ -110,12 +107,11 @@ const Profile: FC<ProfileProps> = (props) => {
                 className="outlined-btn"
                 onClick={() => {
                   if (getUser.data) {
-                    if (getUser.data?.chatId) {
-                      navigate(`/chats/${getUser.data?.chatId}`);
-                    } else {
-                      navigate(`/chats/${uuidv4()}`);
-                      dispatch(setNewChatUserId(getUser.data._id));
-                    }
+                    getUser.data?.chatId
+                      ? navigate(`/chats/${getUser.data?.chatId}`)
+                      : navigate(
+                          `/chats/${uuidv4()}?userId=${getUser.data._id}`
+                        );
                   }
                 }}
               >

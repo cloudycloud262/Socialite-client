@@ -6,7 +6,6 @@ export interface ChatState {
   currUnread: { count: number; sender: string };
   activeChatIndex: number;
   render: boolean;
-  newChatUserId: string;
 }
 
 const initialState: ChatState = {
@@ -14,7 +13,6 @@ const initialState: ChatState = {
   currUnread: { count: 0, sender: "" },
   activeChatIndex: -1,
   render: false,
-  newChatUserId: "",
 };
 
 export const chatSlice = createSlice({
@@ -36,9 +34,6 @@ export const chatSlice = createSlice({
     setActiveChatIndex: (state, action: PayloadAction<number>) => {
       state.activeChatIndex = action.payload;
     },
-    setNewChatUserId: (state, action: PayloadAction<string>) => {
-      state.newChatUserId = action.payload;
-    },
     setRender: (state) => {
       state.render = !state.render;
     },
@@ -51,7 +46,6 @@ export const {
   incrementTotalUnreadCount,
   setCurrUnread,
   setActiveChatIndex,
-  setNewChatUserId,
   setRender,
 } = chatSlice.actions;
 
