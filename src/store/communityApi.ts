@@ -32,7 +32,7 @@ export const communityApi = createApi({
   reducerPath: "community",
   tagTypes: ["Community"],
   baseQuery: fetchBaseQuery({
-    baseUrl: `${import.meta.env.VITE_BACKEND_URL}/community`,
+    baseUrl: `${import.meta.env.VITE_BASE_URL}/api/community`,
   }),
   endpoints: (builder) => ({
     getCommunities: builder.query<Communities[], GetCommunityArgs>({

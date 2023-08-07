@@ -23,7 +23,7 @@ export const postApi = createApi({
   reducerPath: "post",
   tagTypes: ["Posts"],
   baseQuery: fetchBaseQuery({
-    baseUrl: `${import.meta.env.VITE_BACKEND_URL}/post`,
+    baseUrl: `${import.meta.env.VITE_BASE_URL}/api/post`,
   }),
   endpoints: (builder) => ({
     getPosts: builder.query<Post[], PostsArgs>({
