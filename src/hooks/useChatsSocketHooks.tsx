@@ -72,7 +72,7 @@ const useChatsSocketHooks = (): void => {
         let newChat: Chat;
         if (extraObj.isNew) {
           const res = await fetch(
-            `${import.meta.env.VITE_BASE_URL}/api/user/${messageObj.senderId}`,
+            `${import.meta.env.VITE_API_REWRITE_URL}/user/${messageObj.senderId}`,
             { credentials: "include" }
           );
           const username = (await res.json()).username;

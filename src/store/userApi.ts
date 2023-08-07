@@ -43,7 +43,7 @@ export const userApi = createApi({
     "ReceivedRequest",
   ],
   baseQuery: fetchBaseQuery({
-    baseUrl: `${import.meta.env.VITE_BASE_URL}/api/user`,
+    baseUrl: `${import.meta.env.VITE_API_REWRITE_URL}/user`,
   }),
   endpoints: (builder) => ({
     getUsers: builder.query<Users[], usersArgs>({

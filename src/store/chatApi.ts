@@ -20,7 +20,7 @@ export const chatApi = createApi({
   reducerPath: "chat",
   tagTypes: ["Chats", "Messages"],
   baseQuery: fetchBaseQuery({
-    baseUrl: `${import.meta.env.VITE_BASE_URL}/api/chat`,
+    baseUrl: `${import.meta.env.VITE_API_REWRITE_URL}/chat`,
   }),
   endpoints: (builder) => ({
     getChats: builder.query<Chat[], void>({
